@@ -12,7 +12,7 @@ const Utils = {
 
   initCommands ( context: vscode.ExtensionContext ) {
 
-    const {commands} = vscode.extensions.getExtension ( 'fabiospampinato.vscode-open-in-node_modules' ).packageJSON.contributes;
+    const {commands} = vscode.extensions.getExtension ( 'fabiospampinato.vscode-open-in-node-modules' ).packageJSON.contributes;
 
     commands.forEach ( ({ command, title }) => {
 

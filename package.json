@@ -1,5 +1,5 @@
 {
-  "name": "vscode-open-in-node_modules",
+  "name": "vscode-open-in-node-modules",
   "displayName": "Open in node_modules",
   "description": "Open the current selection or arbitrary string in node_modules.",
   "icon": "resources/logo-128x128.png",
@@ -26,7 +26,7 @@
     "test": "node ./node_modules/vscode/bin/test"
   },
   "bugs": {
-    "url": "https://github.com/fabiospampinato/vscode-open-in-node_modules/issues"
+    "url": "https://github.com/fabiospampinato/vscode-open-in-node-modules/issues"
   },
   "author": {
     "name": "Fabio Spampinato",
@@ -34,7 +34,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/fabiospampinato/vscode-open-in-node_modules.git"
+    "url": "https://github.com/fabiospampinato/vscode-open-in-node-modules.git"
   },
   "engines": {
     "vscode": "^1.15.0"
