@@ -56,12 +56,14 @@ async function open ( pkg?: string | string[] ) {
 
       try {
 
-        const filePath = resolveFrom ( fromPath, pkg ),
-              fileParts = filePath.split ( path.sep ),
-              node_modulesIndex = fileParts.indexOf ( 'node_modules' ),
-              folderPath = fileParts.slice ( 0, node_modulesIndex + 2 ).join ( path.sep );
+        const filePath: string = resolveFrom ( fromPath, pkg ),
+              fileParts = filePath.split ( /(?:\\|\/)+/g ),
+              pkgParts = pkg.split ( /(?:\\|\/)+/g ),
+              endIndex = _.findLastIndex ( fileParts, ( p, index ) => _.isEqual ( fileParts.slice ( index - pkgParts.length, index ), pkgParts ) ),
+              folderPath = fileParts.slice ( 0, endIndex ).join ( path.sep );
 
         Utils.folder.open ( folderPath, true );
+
       } catch ( e ) {
 
         vscode.window.showErrorMessage ( `Module "${pkg}" not found in node_modules` );
