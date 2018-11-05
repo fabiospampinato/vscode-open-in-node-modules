@@ -1,3 +1,7 @@
+### Version 1.1.0
+- Displaying an error if the module has not been found
+- Added support for namespaced modules
+
 ### Version 1.0.2
 - Outputting modern code (es2017, faster)
 - Using "Debug Launcher" for debugging
