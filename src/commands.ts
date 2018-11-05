@@ -62,8 +62,11 @@ async function open ( pkg?: string | string[] ) {
               folderPath = fileParts.slice ( 0, node_modulesIndex + 2 ).join ( path.sep );
 
         Utils.folder.open ( folderPath, true );
+      } catch ( e ) {
 
-      } catch ( e ) {}
+        vscode.window.showErrorMessage ( `Module "${pkg}" not found in node_modules` );
+
+      }
 
     });
 
