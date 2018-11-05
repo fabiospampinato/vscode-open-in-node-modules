@@ -1,3 +1,6 @@
+### Version 1.1.1
+- Readme: using hi-res logo
+
 ### Version 1.1.0
 - Displaying an error if the module has not been found
 - Added support for namespaced modules
