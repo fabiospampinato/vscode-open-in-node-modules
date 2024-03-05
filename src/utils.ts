@@ -1,49 +1,40 @@
 
 /* IMPORT */
 
-import * as _ from 'lodash';
-import * as path from 'path';
-import * as vscode from 'vscode';
-import * as Commands from './commands';
+import vscode from 'vscode';
 
-/* UTILS */
+/* MAIN */
 
-const Utils = {
+const castArray = <T> ( value: T | T[] ): T[] => {
 
-  initCommands ( context: vscode.ExtensionContext ) {
+  return Array.isArray ( value ) ? value : [value];
 
-    const {commands} = vscode.extensions.getExtension ( 'fabiospampinato.vscode-open-in-node-modules' ).packageJSON.contributes;
+};
 
-    commands.forEach ( ({ command, title }) => {
+const getPackagesFromEditor = (): string[] | undefined => {
 
-      const commandName = _.last ( command.split ( '.' ) ) as string,
-            handler = Commands[commandName],
-            disposable = vscode.commands.registerCommand ( command, () => handler () );
+  const {activeTextEditor} = vscode.window;
 
-      context.subscriptions.push ( disposable );
+  if ( !activeTextEditor ) return;
 
-    });
+  const {document, selections} = activeTextEditor;
+  const texts = selections.map ( selection => document.getText ( selection ) ).filter ( Boolean );
 
-    return Commands;
+  if ( !texts.length ) return;
 
-  },
+  return texts;
 
-  folder: {
+};
 
-    open ( folderPath, inNewWindow? ) {
+const getPackagesFromPrompt = async ( value?: string ): Promise<string | undefined> => {
 
-      folderPath = path.normalize ( folderPath );
-
-      const folderuri = vscode.Uri.file ( folderPath );
-
-      vscode.commands.executeCommand ( 'vscode.openFolder', folderuri, inNewWindow );
-
-    }
-
-  }
+  return await vscode.window.showInputBox ({
+    placeHolder: 'NPM package name...',
+    value
+  });
 
 };
 
 /* EXPORT */
 
-export default Utils;
+export {castArray, getPackagesFromEditor, getPackagesFromPrompt};

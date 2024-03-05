@@ -1,80 +1,59 @@
 
 /* IMPORT */
 
-import * as _ from 'lodash';
-import * as path from 'path';
-import * as resolveFrom from 'resolve-from';
-import * as vscode from 'vscode';
-import Utils from './utils';
+import findeUp from 'find-up-path';
+import {moduleResolve} from 'import-meta-resolve';
+import path from 'node:path';
+import url from 'node:url';
+import vscode from 'vscode';
+import {getProjectRootPath} from 'vscode-extras';
+import {castArray, getPackagesFromEditor, getPackagesFromPrompt} from './utils';
 
-/* COMMANDS */
+/* MAIN */
 
-async function open ( pkg?: string | string[] ) {
+const open = async ( names?: string | string[] ): Promise<void> => {
 
-  const textEditor = vscode.window.activeTextEditor;
+  const fromPath = vscode.window.activeTextEditor?.document.uri.fsPath || getProjectRootPath ();
 
-  if ( !textEditor ) return vscode.window.showErrorMessage ( 'You need to have at least a file open' );
+  if ( !fromPath ) return void vscode.window.showErrorMessage ( 'You need to have at least a file open' );
 
-  /* SELECTIONS */
+  names ||= getPackagesFromEditor () || await getPackagesFromPrompt ();
 
-  if ( !pkg ) {
+  if ( !names?.length ) return;
 
-    const editor = vscode.window.activeTextEditor;
+  const fromURL = url.pathToFileURL ( fromPath );
 
-    if ( editor ) {
+  for ( const name of castArray ( names ) ) {
 
-      const {document, selections} = editor,
-            texts = _.compact ( selections.map ( selection => document.getText ( selection ) ) );
+    try {
 
-      if ( texts.length ) {
+      const moduleUrl = moduleResolve ( name, fromURL );
+      const modulePath = url.fileURLToPath ( moduleUrl );
+      const packagePath = findeUp ( 'package.json', path.dirname ( modulePath ) );
 
-        pkg = texts;
+      if ( packagePath ) {
+
+        const packageURI = vscode.Uri.file ( path.dirname ( packagePath ) );
+
+        vscode.commands.executeCommand ( 'vscode.openFolder', packageURI, true );
+
+      } else {
+
+        const moduleURI = vscode.Uri.file ( modulePath );
+
+        vscode.commands.executeCommand ( 'vscode.open', moduleURI );
 
       }
+
+    } catch {
+
+      vscode.window.showErrorMessage ( `Module "${name}" not found in node_modules` );
 
     }
 
   }
 
-  /* INPUT BOX */
-
-  if ( !pkg ) {
-
-    pkg = await vscode.window.showInputBox ({
-      placeHolder: 'NPM package name...'
-    });
-
-  }
-
-  /* OPEN */
-
-  if ( pkg ) {
-
-    const fromPath = textEditor.document.uri.fsPath;
-
-    _.castArray ( pkg ).forEach ( pkg => {
-
-      try {
-
-        const filePath: string = resolveFrom ( fromPath, pkg ),
-              fileParts = filePath.split ( /(?:\\|\/)+/g ),
-              pkgParts = pkg.split ( /(?:\\|\/)+/g ),
-              endIndex = _.findLastIndex ( fileParts, ( p, index ) => _.isEqual ( fileParts.slice ( index - pkgParts.length, index ), pkgParts ) ),
-              folderPath = fileParts.slice ( 0, endIndex ).join ( path.sep );
-
-        Utils.folder.open ( folderPath, true );
-
-      } catch ( e ) {
-
-        vscode.window.showErrorMessage ( `Module "${pkg}" not found in node_modules` );
-
-      }
-
-    });
-
-  }
-
-}
+};
 
 /* EXPORT */
 
