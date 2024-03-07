@@ -6,14 +6,14 @@ import {moduleResolve} from 'import-meta-resolve';
 import path from 'node:path';
 import url from 'node:url';
 import vscode from 'vscode';
-import {getProjectRootPath} from 'vscode-extras';
+import {getActiveFilePath, getProjectRootPath} from 'vscode-extras';
 import {castArray, getPackagesFromEditor, getPackagesFromPrompt} from './utils';
 
 /* MAIN */
 
 const open = async ( names?: string | string[] ): Promise<void> => {
 
-  const fromPath = vscode.window.activeTextEditor?.document.uri.fsPath || getProjectRootPath ();
+  const fromPath = getActiveFilePath () || getProjectRootPath ();
 
   if ( !fromPath ) return void vscode.window.showErrorMessage ( 'You need to have at least a file open' );
 
