@@ -1,3 +1,6 @@
+### Version 2.0.3
+- Fixed an edge case when triggered with no open file
+
 ### Version 2.0.2
 - Minor internal improvements
 
