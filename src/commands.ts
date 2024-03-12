@@ -5,8 +5,7 @@ import findeUp from 'find-up-path';
 import {moduleResolve} from 'import-meta-resolve';
 import path from 'node:path';
 import url from 'node:url';
-import vscode from 'vscode';
-import {getActiveFilePath, getProjectRootPath} from 'vscode-extras';
+import {alert, getActiveFilePath, getProjectRootPath, openInEditor, openInWindow} from 'vscode-extras';
 import {castArray, getPackagesFromEditor, getPackagesFromPrompt} from './utils';
 
 /* MAIN */
@@ -15,7 +14,7 @@ const open = async ( names?: string | string[] ): Promise<void> => {
 
   const fromPath = getActiveFilePath () || getProjectRootPath ();
 
-  if ( !fromPath ) return void vscode.window.showErrorMessage ( 'You need to have at least a file open' );
+  if ( !fromPath ) return alert.error ( 'You need to have at least a file open' );
 
   names ||= getPackagesFromEditor () || await getPackagesFromPrompt ();
 
@@ -33,21 +32,17 @@ const open = async ( names?: string | string[] ): Promise<void> => {
 
       if ( packagePath ) {
 
-        const packageURI = vscode.Uri.file ( path.dirname ( packagePath ) );
-
-        vscode.commands.executeCommand ( 'vscode.openFolder', packageURI, true );
+        openInWindow ( path.dirname ( packagePath ), true );
 
       } else {
 
-        const moduleURI = vscode.Uri.file ( modulePath );
-
-        vscode.commands.executeCommand ( 'vscode.open', moduleURI );
+        openInEditor ( modulePath );
 
       }
 
     } catch {
 
-      vscode.window.showErrorMessage ( `Module "${name}" not found in node_modules` );
+      alert.error ( `Module "${name}" not found in node_modules` );
 
     }
 

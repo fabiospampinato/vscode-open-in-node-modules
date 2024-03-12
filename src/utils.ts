@@ -2,6 +2,7 @@
 /* IMPORT */
 
 import vscode from 'vscode';
+import {prompt} from 'vscode-extras';
 
 /* MAIN */
 
@@ -28,10 +29,7 @@ const getPackagesFromEditor = (): string[] | undefined => {
 
 const getPackagesFromPrompt = async ( value?: string ): Promise<string | undefined> => {
 
-  return await vscode.window.showInputBox ({
-    placeHolder: 'NPM package name...',
-    value
-  });
+  return prompt.string ( 'NPM package name...', value );
 
 };
 
