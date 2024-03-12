@@ -12,7 +12,10 @@ import {castArray, getPackagesFromEditor, getPackagesFromPrompt} from './utils';
 
 const open = async ( names?: string | string[] ): Promise<void> => {
 
-  const fromPath = getActiveFilePath () || getProjectRootPath ();
+  const filePath = getActiveFilePath ();
+  const rootPath = getProjectRootPath ();
+  const rootFilePath = rootPath && path.join ( rootPath, 'index.js' );
+  const fromPath = filePath || rootFilePath;
 
   if ( !fromPath ) return alert.error ( 'You need to have at least a file open' );
 
