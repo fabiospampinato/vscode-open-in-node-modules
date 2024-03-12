@@ -6,7 +6,7 @@ import {moduleResolve} from 'import-meta-resolve';
 import path from 'node:path';
 import url from 'node:url';
 import {alert, getActiveFilePath, getProjectRootPath, openInEditor, openInWindow} from 'vscode-extras';
-import {castArray, getPackagesFromEditor, getPackagesFromPrompt} from './utils';
+import {castArraySplitted, getPackagesFromEditor, getPackagesFromPrompt} from './utils';
 
 /* MAIN */
 
@@ -25,7 +25,7 @@ const open = async ( names?: string | string[] ): Promise<void> => {
 
   const fromURL = url.pathToFileURL ( fromPath );
 
-  for ( const name of castArray ( names ) ) {
+  for ( const name of castArraySplitted ( names ) ) {
 
     try {
 

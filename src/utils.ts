@@ -12,6 +12,15 @@ const castArray = <T> ( value: T | T[] ): T[] => {
 
 };
 
+const castArraySplitted = ( value: string | string[] ): string[] => {
+
+  const splitRe = /[\s,]+/g;
+  const splits = castArray ( value ).map ( value => value.split ( splitRe ) ).flat ().filter ( Boolean );
+
+  return splits;
+
+};
+
 const getPackagesFromEditor = (): string[] | undefined => {
 
   const {activeTextEditor} = vscode.window;
@@ -35,4 +44,4 @@ const getPackagesFromPrompt = async ( value?: string ): Promise<string | undefin
 
 /* EXPORT */
 
-export {castArray, getPackagesFromEditor, getPackagesFromPrompt};
+export {castArray, castArraySplitted, getPackagesFromEditor, getPackagesFromPrompt};
