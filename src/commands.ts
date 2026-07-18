@@ -2,9 +2,8 @@
 /* IMPORT */
 
 import findeUp from 'find-up-path';
-import {moduleResolve} from 'import-meta-resolve';
+import {createRequire} from 'node:module';
 import path from 'node:path';
-import url from 'node:url';
 import {alert, getActiveFilePath, getProjectRootPath, openInEditor, openInWindow} from 'vscode-extras';
 import {castArraySplitted, getPackagesFromEditor, getPackagesFromPrompt} from './utils';
 
@@ -23,14 +22,12 @@ const open = async ( names?: string | string[] ): Promise<void> => {
 
   if ( !names?.length ) return;
 
-  const fromURL = url.pathToFileURL ( fromPath );
-
   for ( const name of castArraySplitted ( names ) ) {
 
     try {
 
-      const moduleUrl = moduleResolve ( name, fromURL );
-      const modulePath = url.fileURLToPath ( moduleUrl );
+      const require = createRequire ( fromPath );
+      const modulePath = require.resolve ( name );
       const packagePath = findeUp ( 'package.json', path.dirname ( modulePath ) );
 
       if ( packagePath ) {
