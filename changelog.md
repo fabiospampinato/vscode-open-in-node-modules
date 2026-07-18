@@ -1,3 +1,6 @@
+### Version 2.1.1
+- Deleted third-party "import-meta-resolve" dependency
+
 ### Version 2.1.0
 - Added support for opening multiple comma/space separated packages at once
 
